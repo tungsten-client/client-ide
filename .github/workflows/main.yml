@@ -1,12 +1,12 @@
-name: Build and Upload React App
+name: Build and Deploy React App
 
 on:
   push:
     branches:
-      - main # Change this to your main branch name
+      - main
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,52 +16,27 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 18.15 # Change this to match your desired Node.js version
+          node-version: '18.5' # Change to your desired Node.js version
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build the React app
-        run: npm run build
+        run: npm run build # Replace with your actual build command
 
-      - name: Upload files as artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: built-files
-          path: dist/ # Change this to the build output directory of your React app
+      - name: Prepare deployment directory
+        run: mkdir -p deployment/tungsten/src/main/resources/ide
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout another repository
-        uses: actions/checkout@v2
-        with:
-          repository: tungsten-client/tungsten # Replace with the username and repository name of your destination repository
-          token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token that has access to the destination repository
-          path: tungsten/src/main/resources/ide # This specifies the path to checkout the repository
-
-      - name: Download built files
-        uses: actions/download-artifact@v2
-        with:
-          name: built-files
-          
-      - name: List workspace contents
-        run: ls -R ${{ github.workspace }}
-          
-      - name: Copy files to destination directory
-        run: |
-          mkdir -p tungsten/src/main/resources/ide
-          cp -R /home/runner/work/client-ide/client-ide/* tungsten/src/main/resources/ide/
+      - name: Copy the build to the deployment directory
+        run: cp -r dist/* deployment/tungsten/src/main/resources/ide
+        # Replace "build/*" with the actual path to your React app's build output
 
       - name: Commit and push changes
-        working-directory: tungsten/src/main/resources/ide
+        working-directory: deployment
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git status # Print the status to check if there are any changes
+          git config user.name "GitHub Actions"
+          git config user.email "actions@users.noreply.github.com"
           git add .
-          git status # Print the status to verify that the changes are staged for commit
-          git commit -m "Deploy built files from workflow"
-          git push
+          git commit -m "Deploying latest build of ide"
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/tungsten-client/tungsten.git main
+
