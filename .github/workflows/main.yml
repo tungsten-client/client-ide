@@ -46,12 +46,18 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: built-files
+          
+      - name: Copy files to destination directory
+        run: |
+          cp -R ${{ github.workspace }}/built-files/. tungsten/src/main/resources/ide/
 
       - name: Commit and push changes
         working-directory: tungsten/src/main/resources/ide
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git status # Print the status to check if there are any changes
           git add .
+          git status # Print the status to verify that the changes are staged for commit
           git commit -m "Deploy built files from workflow"
           git push
