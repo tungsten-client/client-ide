@@ -1,0 +1,62 @@
+name: Build and Upload React App
+
+on:
+  push:
+    branches:
+      - main # Change this to your main branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.15 # Change this to match your desired Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the React app
+        run: npm run build
+
+      - name: Upload files as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: built-files
+          path: dist/ # Change this to the build output directory of your React app
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout another repository
+        uses: actions/checkout@v2
+        with:
+          repository: tungsten-client/tungsten # Replace with the username and repository name of your destination repository
+          token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token that has access to the destination repository
+          path: destination-repo # This specifies the path to checkout the repository
+
+      - name: Download built files
+        uses: actions/download-artifact@v2
+        with:
+          name: built-files
+
+      - name: Copy files to destination directory
+        run: |
+          mkdir -p destination-repo/tungsten/src/main/resources/ide
+          cp -R built-files/. destination-repo/tungsten/src/main/resources/ide/
+
+      - name: Commit and push changes
+        working-directory: destination-repo
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Deploy built files from workflow"
+          git push
