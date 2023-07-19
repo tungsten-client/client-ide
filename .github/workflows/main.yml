@@ -27,7 +27,7 @@ jobs:
     - name: Clone 'tungsten' repository into a subdirectory
       uses: actions/checkout@v2
       with:
-        repository: https://github.com/tungsten-client/tungsten.git  # Replace with the URL of your 'tungsten' private repository
+        repository: tungsten-client/tungsten  # Replace with the URL of your 'tungsten' private repository
         path: tungsten-repo  # Directory where the 'tungsten' repository will be cloned
         token: ${{ secrets.ACCESS_TOKEN }}  # Use your generated Personal Access Token here
 
