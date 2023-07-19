@@ -5,7 +5,6 @@ import { createTheme, ThemeProvider } from '@mui/material';
 
 
 const Explorer = (props:any) => {
-    
     /* TODO:
     get files from java on init
     for example
@@ -66,6 +65,7 @@ const Explorer = (props:any) => {
     const handelClick = (path: String) => {
       console.log("Clicked: " + path) 
       props.setCode() // TODO: set code here (call getfile)
+      //TODO: save code on switch
     }     
 
     const renderTree = (nodes: RenderTree, currentPath: string) => (

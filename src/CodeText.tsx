@@ -3,6 +3,13 @@ import {java} from '@codemirror/lang-java'
 import { duotoneDark } from '@uiw/codemirror-theme-duotone';
 
 const CodeText = (props:any) => {
+  const handleKeyDown = (event:any) => {
+    if (event.ctrlKey && event.which === 83) {
+      event.preventDefault();
+      console.log('save')
+      // save here... 
+    }
+}
   return (
     <div className=''>
       <CodeMirror
@@ -13,6 +20,7 @@ const CodeText = (props:any) => {
         theme = {duotoneDark} // TODO: add theme selection functionlity using useState() and mui buttons
         extensions={[java()]}
         style={{fontSize: '15px'}}
+        onKeyDown={handleKeyDown}
       />
     </div>
   )
