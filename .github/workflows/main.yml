@@ -47,13 +47,8 @@ jobs:
         with:
           name: built-files
 
-      - name: Copy files to destination directory
-        run: |
-          mkdir -p destination-repo/tungsten/src/main/resources/ide
-          cp -R built-files/. tungsten/src/main/resources/ide
-
       - name: Commit and push changes
-        working-directory: destination-repo
+        working-directory: tungsten/src/main/resources/ide
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
