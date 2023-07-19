@@ -1,0 +1,20 @@
+{
+    "name": "src",
+    "type": "folder",
+    "items":[
+        {
+            "name": "App.css",
+            "type": "file"
+        },
+        {
+            "name": "assets", 
+            "type": "folder", 
+            "items":[ 
+                {
+                    "name": "react.svg", 
+                    "type": "file"
+                }
+            ]
+        }
+    ]
+}
