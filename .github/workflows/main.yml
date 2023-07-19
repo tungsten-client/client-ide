@@ -40,7 +40,7 @@ jobs:
         with:
           repository: tungsten-client/tungsten # Replace with the username and repository name of your destination repository
           token: ${{ secrets.ACCESS_TOKEN }} # Replace ACCESS_TOKEN with a personal access token that has access to the destination repository
-          path: destination-repo # This specifies the path to checkout the repository
+          path: tungsten/src/main/resources/ide # This specifies the path to checkout the repository
 
       - name: Download built files
         uses: actions/download-artifact@v2
@@ -50,7 +50,7 @@ jobs:
       - name: Copy files to destination directory
         run: |
           mkdir -p destination-repo/tungsten/src/main/resources/ide
-          cp -R built-files/. destination-repo/tungsten/src/main/resources/ide/
+          cp -R built-files/. tungsten/src/main/resources/ide
 
       - name: Commit and push changes
         working-directory: destination-repo
