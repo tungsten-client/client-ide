@@ -52,7 +52,8 @@ jobs:
           
       - name: Copy files to destination directory
         run: |
-          cp -R ${{ github.workspace }}/built-files/. tungsten/src/main/resources/ide/
+          cp -R /home/runner/work/client-ide/client-ide/built-files/. tungsten/src/main/resources/ide/
+
 
       - name: Commit and push changes
         working-directory: tungsten/src/main/resources/ide
