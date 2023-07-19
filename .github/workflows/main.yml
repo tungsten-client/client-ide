@@ -47,6 +47,9 @@ jobs:
         with:
           name: built-files
           
+      - name: List workspace contents
+        run: ls -R ${{ github.workspace }}
+          
       - name: Copy files to destination directory
         run: |
           cp -R ${{ github.workspace }}/built-files/. tungsten/src/main/resources/ide/
