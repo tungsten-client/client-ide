@@ -64,8 +64,8 @@ const Explorer = (props:any) => {
     }
 
     const handelClick = (path: String) => {
-      console.log("Clicked: " + path) // this is what sends the code up
-      props.setCode() // TODO: set code here
+      console.log("Clicked: " + path) 
+      props.setCode() // TODO: set code here (call getfile)
     }     
 
     const renderTree = (nodes: RenderTree, currentPath: string) => (

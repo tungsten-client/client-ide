@@ -10,7 +10,7 @@ const CodeText = (props:any) => {
         width='70vw'
         basicSetup={{lineNumbers: true}}
         value={props.code}
-        theme = {duotoneDark}
+        theme = {duotoneDark} // TODO: add theme selection functionlity using useState() and mui buttons
         extensions={[java()]}
         style={{fontSize: '15px'}}
       />

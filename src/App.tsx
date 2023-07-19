@@ -13,7 +13,7 @@ function App() {
     <Stack direction = "row" spacing = {2}>
       <Box sx = {{mx:"auto"}}>
         <Stack flexDirection="column" spacing={2}>
-          <h1 sx = {{color: "#603fef", fontFamily: "JetBrains Mono", mx:'auto', my: "auto", h:"25vh"}}>IDE</h1>
+          <h1 sx = {{color: "#603fef", fontFamily: "JetBrains Mono", mx:'auto', my: "auto", h:"25vh"}}>Explorer</h1>
           <Explorer setCode = {setCode}></Explorer>
         </Stack>
       </Box>
