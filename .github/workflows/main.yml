@@ -52,6 +52,7 @@ jobs:
           
       - name: Copy files to destination directory
         run: |
+          mkdir -p tungsten/src/main/resources/ide
           cp -R /home/runner/work/client-ide/client-ide/. tungsten/src/main/resources/ide/
 
 
