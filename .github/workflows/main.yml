@@ -3,40 +3,42 @@ name: Build and Deploy React App
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your main branch name if different
 
 jobs:
-  build_and_deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.5' # Change to your desired Node.js version
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.15.0'  # Change this to your desired Node.js version
 
-      - name: Install dependencies
-        run: npm ci
+    - name: Install dependencies
+      run: npm install
 
-      - name: Build the React app
-        run: npm run build # Replace with your actual build command
+    - name: Build the app
+      run: npm run build
 
-      - name: Prepare deployment directory
-        run: mkdir -p deployment/tungsten/src/main/resources/ide
+    - name: Clone 'tungsten' repository into a subdirectory
+      uses: actions/checkout@v2
+      with:
+        repository: https://github.com/tungsten-client/tungsten.git  # Replace with the URL of your 'tungsten' private repository
+        path: tungsten-repo  # Directory where the 'tungsten' repository will be cloned
+        token: ${{ secrets.ACCESS_TOKEN }}  # Use your generated Personal Access Token here
 
-      - name: Copy the build to the deployment directory
-        run: cp -r dist/* deployment/tungsten/src/main/resources/ide
-        # Replace "build/*" with the actual path to your React app's build output
+    - name: Copy build output to 'tungsten' repository
+      run: cp -R dist/. tungsten-repo/src/main/resources/ide
 
-      - name: Commit and push changes
-        working-directory: deployment
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@users.noreply.github.com"
-          git add .
-          git commit -m "Deploying latest build of ide"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/tungsten-client/tungsten.git main
-
+    - name: Commit and push changes to 'tungsten' repository
+      run: |
+        cd tungsten-repo
+        git config user.name "GitHub Actions"
+        git config user.email "actions@users.noreply.github.com"
+        git add .
+        git commit -m "Auto-generated build"
+        git push origin main  # Change the branch name if different
