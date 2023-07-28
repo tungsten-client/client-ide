@@ -2,7 +2,15 @@ import { TreeView, TreeItem } from '@mui/lab';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { createTheme, ThemeProvider } from '@mui/material';
+import {useEffect, useState} from 'react';
 
+declare const binders: {
+  listDir(path: string): string;
+  readFile(path: string): string | null;
+  writeFile(path: string, content: string): void;
+  log(message: string): void;
+  // Add other properties if needed
+};
 
 const Explorer = (props:any) => {
     /* TODO:
@@ -21,6 +29,69 @@ const Explorer = (props:any) => {
           loadJavaBridge();
     },[]) //empty array esnure it is called in start up
     */
+   
+
+    const [data, setData] = useState<RenderTree>({
+      name: "root",
+      type: "folder",
+      items: [
+        {
+          name: "src",
+          type: "folder",
+          items: [
+            {
+              name: "App.css",
+              type: "file",
+            },
+            {
+              name: "assets",
+              type: "folder",
+              items: [
+                {
+                  name: "react.svg",
+                  type: "file",
+                },
+                {
+                  name: "logo.png",
+                  type: "file",
+                },
+              ],
+            },
+            {
+              name: "index.js",
+              type: "file",
+            },
+          ],
+        },
+        {
+          name: "public",
+          type: "folder",
+          items: [
+            {
+              name: "index.html",
+              type: "file",
+            },
+            {
+              name: "favicon.ico",
+              type: "file",
+            },
+          ],
+        },
+        {
+          name: "README.md",
+          type: "file",
+        },
+        {
+          name: "package.json",
+          type: "file",
+        },
+      ],
+    });
+
+    useEffect(()=>{
+      setData(parseRenderTree(binders.listDir('./'))[0]);
+    },[])
+
     interface RenderTree {
         name: string;
         type: string;
@@ -40,27 +111,27 @@ const Explorer = (props:any) => {
         },
       },
     });
-    // sample data; TODO:REMOVE THIS SAMPLE DATA WHEN DONE
-    const data: RenderTree = {
-        name: "src", // this should be the base dir (ONLY ONE FILE IN BASE DIR)
-        type: "folder", // folder or file 
-        items:[ // contents if folder. undefined if file
-            {
-                name: "App.css",
-                type: "file"
-            },
-            {
-                name: "assets", 
-                type: "folder", 
-                items:[ 
-                    {
-                        name: "react.svg", 
-                        type: "file"
-                    }
-                ]
-            }
-        ]
+
+    function parseRenderTree(jsonString: string): RenderTree[] {
+      const jsonArray = JSON.parse(jsonString);
+      const renderTree: RenderTree[] = [];
+  
+      jsonArray.forEach((item: any) => {
+          const node: RenderTree = {
+              name: item.name,
+              type: item.type,
+          };
+  
+          if (item.type === "folder") {
+              node.items = parseRenderTree(item.items);
+          }
+  
+          renderTree.push(node);
+      });
+  
+      return renderTree;
     }
+    // sample data; TODO:REMOVE THIS SAMPLE DATA WHEN DONE
 
     const handelClick = (path: String) => {
       console.log("Clicked: " + path) 
