@@ -89,7 +89,13 @@ const Explorer = (props:any) => {
     });
 
     useEffect(()=>{
-      setData(parseRenderTree(binders.listDir('./'))[0]);
+      let temp:RenderTree = {
+        name: "modules",
+        type: "folder",
+        items: parseRenderTree(binders.listDir('modules'))
+      };
+      if (temp) {setData(temp)}
+      props
     },[])
 
     interface RenderTree {
@@ -104,7 +110,7 @@ const Explorer = (props:any) => {
           styleOverrides: {
             // Name of the slot
             label: {
-              fontSize: '20px', // size idk why i cant use sx prop..
+              fontSize: '1.25rem', // size idk why i cant use sx prop..
               fontFamily: 'JetBrains Mono'
             }
           },
@@ -115,33 +121,40 @@ const Explorer = (props:any) => {
     function parseRenderTree(jsonString: string): RenderTree[] {
       const jsonArray = JSON.parse(jsonString);
       const renderTree: RenderTree[] = [];
-  
+
       jsonArray.forEach((item: any) => {
-          const node: RenderTree = {
-              name: item.name,
-              type: item.type,
-          };
-  
-          if (item.type === "folder") {
-              node.items = parseRenderTree(item.items);
-          }
-  
-          renderTree.push(node);
+        const node: RenderTree = {
+          name: item.name,
+          type: item.type,
+        };
+
+        if (item.type === "folder") {
+          node.items = item.items; // Assign the array directly, no need to parse -> good now
+        }
+
+        renderTree.push(node);
       });
-  
+
       return renderTree;
     }
     // sample data; TODO:REMOVE THIS SAMPLE DATA WHEN DONE
 
-    const handelClick = (path: String) => {
+    const handelClick = (path: string, type: string) => {
       console.log("Clicked: " + path) 
-      props.setCode() // TODO: set code here (call getfile)
+      //save code
+
+      //get code
+      if (type === "file") {
+        props.setCode(binders.readFile(path))
+        props.setSelectedFile(path)
+
+      }
       //TODO: save code on switch
     }     
 
     const renderTree = (nodes: RenderTree, currentPath: string) => (
       <ThemeProvider theme = {theme}>
-        <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name} onClick={() => {handelClick(`${currentPath}/${nodes.name}`)}}>
+        <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name} onClick={() => {handelClick(currentPath, nodes.type)}}>
           {Array.isArray(nodes.items)
             ? nodes.items.map((node) => renderTree(node, `${currentPath}/${node.name}`))
             : null}
@@ -158,7 +171,7 @@ const Explorer = (props:any) => {
           defaultExpandIcon={<ChevronRightIcon />}
           sx={{height: "auto", width: "25vw", flexGrow: 1, maxWidth: 400, overflowY: 'none', color: "#603fef", justifyContent: "right", alignContent: "right", backgroundColor: "#0c0642"}}
         >
-          {renderTree(data, 'src')}
+          {renderTree(data, '/modules')}
         </TreeView>
       )
 }
