@@ -27,7 +27,7 @@ jobs:
 
     - name: Deploy to build branch
       env:
-          PAT_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
