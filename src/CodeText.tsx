@@ -8,10 +8,28 @@ declare const binders: {
   readFile(path: string): string | null;
   writeFile(path: string, content: string): void;
   log(message: string): void;
+  getCompletion(partial: string): string;
   // Add other properties if needed
 };
 
 const CodeText = (props:any) => {
+
+  function myCompletions(context:any) {
+    let word = context.matchBefore(/\w*/);
+    if (word.from == word.to && !context.explicit) return null;
+  
+    const partialString = word.text; // Get the partial string
+    const computedCompletion = binders.getCompletion(partialString); //TODO: replace the date.now() with the language server result
+  
+    return {
+      from: word.from,
+      options: [
+        { label: computedCompletion, type: "variable" }, // Use computed completion here
+        // Other autocompletion options
+      ],
+    };
+  }
+
   const handleKeyDown = (event:any) => {
     if (event.ctrlKey && event.which === 83) {
       event.preventDefault();
@@ -31,7 +49,7 @@ const CodeText = (props:any) => {
         basicSetup={{lineNumbers: true}}
         value={props.code}
         theme = {duotoneDark} // TODO: add theme selection functionlity using useState() and mui buttons
-        extensions={[java(), autocompletion()]}
+        extensions={[java(), autocompletion({ override: [myCompletions] })]}
         style={{fontSize: '15px'}}
         onKeyDown={handleKeyDown}
         onChange={(value)=>props.setCode(value)}
