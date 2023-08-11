@@ -9,14 +9,14 @@ import { autocompletion} from '@codemirror/autocomplete';
 const CodeText = (props:any) => {
 
   function myCompletions(context:any) {
-    let word = context.matchBefore(/\w*/);
+    let word = context.matchBefore(/[\w.]*$/);
     if (word.from == word.to && !context.explicit) return null;
   
     const partialString = word.text; // Get the partial string
     const computedCompletion = partialString+Date.now(); //TODO: replace the date.now() with the language server result
   
     return {
-      from: word.from,
+      from: 0,
       options: [
         { label: computedCompletion, type: "variable" }, // Use computed completion here
         // Other autocompletion options
