@@ -15,7 +15,7 @@ declare const binders: {
 const CodeText = (props:any) => {
 
   function myCompletions(context:any) {
-    let word = context.matchBefore(/\w*/);
+    let word = context.matchBefore(/[\w.]*$/);
     if (word.from == word.to && !context.explicit) return null;
   
     const partialString = word.text; // Get the partial string
