@@ -10,18 +10,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.9.0",
     "@codemirror/lang-java": "^6.0.1",
+    "@codemirror/lang-rust": "^6.0.1",
+    "@codemirror/lint": "^6.4.0",
+    "@codemirror/state": "^6.2.1",
+    "@codemirror/view": "^6.16.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/jetbrains-mono": "^5.0.5",
     "@mui/icons-material": "^5.14.0",
     "@mui/lab": "^5.0.0-alpha.136",
     "@mui/material": "^5.14.0",
+    "@open-rpc/client-js": "^1.8.1",
     "@uiw/codemirror-theme-duotone": "^4.21.7",
     "@uiw/react-codemirror": "^4.21.7",
+    "codemirror": "^6.0.1",
+    "codemirror-languageserver": "^1.11.0",
+    "events": "^3.3.0",
+    "marked": "^7.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "theme-ui": "^0.16.0"
+    "theme-ui": "^0.16.0",
+    "vscode-languageserver-protocol": "^3.17.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",

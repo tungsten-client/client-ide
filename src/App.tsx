@@ -18,7 +18,7 @@ function App() {
         </Stack>
       </Box>
       <Box>
-        <CodeText code = {code}/>
+        <CodeText code = {code} setCode = {setCode}/>
       </Box>
     </Stack>
   )
