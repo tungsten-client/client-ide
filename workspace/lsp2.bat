@@ -1,0 +1,1 @@
+C:\Users\nasir\Desktop\lsp-proxy\lsp-ws-proxy_windows\lsp-ws-proxy.exe --remap -- ./java-language-server-master/dist/lang_server_windows.cmd

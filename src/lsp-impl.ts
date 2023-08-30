@@ -207,6 +207,7 @@ export class LanguageServerClient {
             rootUri: this.rootUri,
             workspaceFolders: this.workspaceFolders,
         }, timeout * 3);
+        console.log("cap ",capabilities)
         this.capabilities = capabilities;
         this.notify('initialized', {});
         this.ready = true;
