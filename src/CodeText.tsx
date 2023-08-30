@@ -1,20 +1,18 @@
 import CodeMirror from '@uiw/react-codemirror';
-import {java} from '@codemirror/lang-java'
-import { rust } from '@codemirror/lang-rust';
+import { java } from '@codemirror/lang-java';
 import { duotoneDark } from '@uiw/codemirror-theme-duotone';
-import { languageServerWithTransport, languageServer, LanguageServerClient } from './lsp-impl';
+import { languageServer } from './lsp-impl';
 
-import { WebSocketTransport } from '@open-rpc/client-js';
-import { useEffect, useState} from 'react';
-import sampleRust from "../workspace/test-project/src/main/java/org/example/Main.java?raw"
+import { useEffect, useState } from 'react';
+import sampleRust from "../workspace/test-project/src/main/java/org/example/Main.java?raw";
 
 
 const CodeText = (props:any) => {
   const [ls, setLS] = useState<any>(null)
   const serverUri = "ws://localhost:9999"
-  //const transport = new WebSocketTransport(serverUri)
   useEffect(()=>{
     props.setCode(sampleRust)
+
     const newls = languageServer({
       // WebSocket server uri and other client options.
       serverUri,
@@ -30,13 +28,18 @@ const CodeText = (props:any) => {
     }
   },[])
 
-  
 
   const handleKeyDown = (event:any) => {
     if (event.ctrlKey && event.which === 83) {
       event.preventDefault();
       console.log('save')
       // save here... 
+    }
+    else if (event.ctrlKey && event.which === 67 ) {
+      console.log('copy')
+    }
+    else if (event.ctrlKey && event.which === 86 ) {
+      console.log('paste')
     }
 }
   return (
