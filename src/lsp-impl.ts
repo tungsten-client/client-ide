@@ -162,17 +162,7 @@ export class LanguageServerClient {
                         didSave: false,
                         willSaveWaitUntil: false,
                     },
-                    completion: {
-                        dynamicRegistration: true,
-                        completionItem: {
-                            snippetSupport: false,
-                            commitCharactersSupport: true,
-                            documentationFormat: ['plaintext', 'markdown'],
-                            deprecatedSupport: false,
-                            preselectSupport: false,
-                        },
-                        contextSupport: false,
-                    },
+                    
                     signatureHelp: {
                         dynamicRegistration: true,
                         signatureInformation: {
