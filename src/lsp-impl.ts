@@ -150,42 +150,7 @@ export class LanguageServerClient {
     async initialize() {
         const { capabilities } = await this.request('initialize', {
             capabilities: {
-                textDocument: {
-                    hover: {
-                        dynamicRegistration: true,
-                        contentFormat: ['plaintext', 'markdown'],
-                    },
-                    moniker: {},
-                    synchronization: {
-                        dynamicRegistration: true,
-                        willSave: false,
-                        didSave: false,
-                        willSaveWaitUntil: false,
-                    },
-                    
-                    signatureHelp: {
-                        dynamicRegistration: true,
-                        signatureInformation: {
-                            documentationFormat: ['plaintext', 'markdown'],
-                        },
-                    },
-                    declaration: {
-                        dynamicRegistration: true,
-                        linkSupport: true,
-                    },
-                    definition: {
-                        dynamicRegistration: true,
-                        linkSupport: true,
-                    },
-                    typeDefinition: {
-                        dynamicRegistration: true,
-                        linkSupport: true,
-                    },
-                    implementation: {
-                        dynamicRegistration: true,
-                        linkSupport: true,
-                    },
-                },
+                
                 workspace: {
                     didChangeConfiguration: {
                         dynamicRegistration: true,
