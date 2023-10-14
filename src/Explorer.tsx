@@ -94,10 +94,40 @@ const Explorer = (props:any) => {
         type: "folder",
         items: parseRenderTree(binders.listDir('modules'))
       };
-      if (temp) {setData(temp)}
-      props
+      if (temp) {
+        setData(temp)
+        if (temp.items && temp.items.length > 0 && temp.items[0].type) {
+          // Now you can access temp.items[0].type safely
+          const { instance, path } = findFirstInstanceWithPath(temp, "file");
+          console.log(instance)
+          props.setCode(binders.readFile(path.join("/")))
+          props.setSelectedFile(path.join("/"));
+        }
+      }
+      
     },[])
 
+    function findFirstInstanceWithPath(
+      tree: RenderTree,
+      targetType: string,
+      currentPath: string[] = []
+    ): { instance: RenderTree | string, path: string[] } {
+      if (tree.type === targetType) {
+          return { instance: tree, path: [...currentPath, tree.name] };
+      }
+  
+      if (tree.items) {
+          for (const item of tree.items) {
+              const { instance, path } = findFirstInstanceWithPath(item, targetType, [...currentPath, tree.name]);
+              if (instance) {
+                  return { instance, path };
+              }
+          }
+      }
+  
+      return { instance: "Empty File", path: [] };
+    }
+  
     interface RenderTree {
         name: string;
         type: string;

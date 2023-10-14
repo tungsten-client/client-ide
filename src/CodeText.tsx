@@ -1,7 +1,10 @@
 import CodeMirror from '@uiw/react-codemirror';
 import {java} from '@codemirror/lang-java'
 import { duotoneDark } from '@uiw/codemirror-theme-duotone';
-import { autocompletion } from '@codemirror/autocomplete';
+import { languageServer } from './lsp-impl';
+
+import { useEffect, useState } from 'react';
+
 
 declare const binders: {
   listDir(path: string): string;
@@ -9,27 +12,33 @@ declare const binders: {
   writeFile(path: string, content: string): void;
   log(message: string): void;
   getCompletion(partial: string): string;
+  getClipboardContents(): string;
+  setClipboardContents(text: string): void;
+
   // Add other properties if needed
 };
 
 const CodeText = (props:any) => {
+  const [ls, setLS] = useState<any>(null)
+  const [curpos, setCurpos] = useState(0);
+  const [selection, setSelection] = useState('')
+  const serverUri = "ws://localhost:9999"
+  useEffect(()=>{
 
-  function myCompletions(context:any) {
-    let word = context.matchBefore(/[\w.]*$/);
-    if (word.from == word.to && !context.explicit) return null;
-  
-    const partialString = word.text; // Get the partial string
-    const computedCompletion = binders.getCompletion(partialString); //TODO: replace the date.now() with the language server result
-  
-    return {
-      from: word.from,
-      options: [
-        { label: computedCompletion, type: "variable" }, // Use computed completion here
-        // Other autocompletion options
-      ],
-    };
-  }
+    const newls = languageServer({
+      // WebSocket server uri and other client options.
+      serverUri,
+      rootUri: 'source://test-project',
+      documentUri: 'source://test-project/src/main/java/org/example/Main.java',
+      languageId: 'java', //TODO: Change to java
+      workspaceFolders: null
+    })
+    setLS(newls)
 
+    return () => {
+      
+    }
+  },[])
   const handleKeyDown = (event:any) => {
     if (event.ctrlKey && event.which === 83) {
       event.preventDefault();
@@ -39,8 +48,23 @@ const CodeText = (props:any) => {
       console.log(props.code)
       binders.writeFile(props.selectedFile, props.code)
     }
-    //if we want to save on edit we can make a useeffect here that saves on every code update?
-}
+    else if (event.ctrlKey && event.which === 67 ) {
+      //copy
+      binders.setClipboardContents(selection)
+    }
+    else if (event.ctrlKey && event.which === 86 ) {
+      //paste
+      const item = binders.getClipboardContents();
+      props.setCode(props.code.slice(0,curpos) + item + props.code.slice(curpos,props.code.length))
+    }
+  }
+
+  const handleStats = (stats:any) => {
+    setCurpos(stats.ranges[0].head)
+    if (stats.selectedText){
+      setSelection(stats.selectionCode)
+    }
+  }
   return (
     <div className=''>
       <CodeMirror
@@ -49,9 +73,10 @@ const CodeText = (props:any) => {
         basicSetup={{lineNumbers: true}}
         value={props.code}
         theme = {duotoneDark} // TODO: add theme selection functionlity using useState() and mui buttons
-        extensions={[java(), autocompletion({ override: [myCompletions] })]}
-        style={{fontSize: '15px'}}
+        extensions={[java(),ls]}
+        style={{fontSize: '40px'}}
         onKeyDown={handleKeyDown}
+        onStatistics={handleStats}
         onChange={(value)=>props.setCode(value)}
       />
     </div>

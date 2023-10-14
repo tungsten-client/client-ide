@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   build: {
-    target: 'es2021',
+    target: 'es2015',
     minify: false
   },
 
